@@ -59,7 +59,7 @@ def modify_user(id_user: int, user:User):
     raise HTTPException(status_code=401, detail="Usuario no encontrado")
 
 
-@app.remove("/users/{id_user}")
+@app.delete("/users/{id_user}")
 def remove_user(id_user: int):
     for saved_user in users_list:
         if saved_user.id == id_user:

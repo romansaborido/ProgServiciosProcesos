@@ -34,6 +34,16 @@ def get_asignatura_by_id(id: int):
         return asignatura
     else:
         raise HTTPException(status_code=404, detail="Asignatura no encontrada")
+    
+
+# Obtener asignatura con query
+@router.get("")
+def get_asignatura_query(id : int):
+    asignatura = [asignatura for asignatura in asignaturas_list if asignatura.id == id]
+    if asignatura:
+        return asignatura
+    raise HTTPException(status_code=404, detail="No asignatura found")
+
 
 
 

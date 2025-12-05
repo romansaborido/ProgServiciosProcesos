@@ -2,6 +2,8 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
+from db.client import db_client
+
 router = APIRouter(prefix="/asignaturas", tags=["asignaturas"])
 
 
@@ -23,7 +25,7 @@ asignaturas_list = [
 # Obtener todas las asignaturas
 @router.get("/")
 def get_asignaturas():
-    return asignaturas_list
+    return db_client
 
 
 # Obtener asignatura por ID
@@ -51,7 +53,7 @@ def get_asignatura_query(id : int):
 @router.post("/", status_code=201, response_model=Asignatura)
 def add_asignatura(asignatura: Asignatura):
     asignatura.id = nextId()
-    asignaturas_list.append(asignatura)
+    db_client.append(asignatura)
     return asignatura
 
 

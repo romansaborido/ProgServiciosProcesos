@@ -6,5 +6,5 @@ def profesor_schema(profesor) -> dict:
         "id_profesor": profesor["id_profesor"]
     }
 
-def profesor_schema(profesores) -> list:
+def profesores_schema(profesores) -> list:
     return [profesor_schema(profesor) for profesor in profesores]

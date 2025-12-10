@@ -6,5 +6,5 @@ def asignatura_schema(asignatura) -> dict:
         "id_profesor": asignatura["id_profesor"]
     }
 
-def asignatura_schema(asignaturas) -> list:
+def asignaturas_schema(asignaturas) -> list:
     return [asignatura_schema(asignatura) for asignatura in asignaturas]

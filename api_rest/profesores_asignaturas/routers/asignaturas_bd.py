@@ -1,5 +1,4 @@
 from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel
 from db.models.asignatura import Asignatura
 from db.client import db_client
 from db.schemas.asignatura import asignatura_schema, asignaturas_schema

@@ -1,11 +1,11 @@
 
 from fastapi import FastAPI
-from routers import empleado, tienda
+from routers.bd import Empleados, Tiendas   
 from fastapi.staticfiles import StaticFiles
+
 
 app = FastAPI()
 
 
-app.include_router(empleado.router)
-app.include_router(tienda.router)
-app.mount("/static", StaticFiles(directory="static"), name="static")
+app.include_router(Empleados.router)
+app.include_router(Tiendas.router)

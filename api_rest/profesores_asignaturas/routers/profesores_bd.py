@@ -12,7 +12,7 @@ router = APIRouter(prefix="/profesoresdb", tags=["profesoresdb"])
 async def profesores():
     # El método find() sin parámetros devuelve todos los registros
     # de la base de datos
-    return profesores_schema(db_client.test.profesores.find())
+    return profesores_schema(db_client.newdb.profesores.find())
 
 
 # Método get tipo query. Sólo busca por id
@@ -38,7 +38,7 @@ async def add_profesor(profesor: Profesor):
     # Añadimos el usuario a nuestra base de datos
     # También podemos obtner con inserted_id el id que la base de datos
     # ha generado para nuestro usuario
-    id = db_client.test.profesores.insert_one(profesor_dict).inserted_id
+    id = db_client.newdb.profesores.insert_one(profesor_dict).inserted_id
 
     # Añadimos el campo id a nuestro diccionario. Hay que hacerle un cast
     # a string puesto que el id en base de datos se almacena como un objeto,
@@ -59,7 +59,7 @@ async def modify_profesor(id: str, new_profesor: Profesor):
     try:
         # Buscamos el id en la base de datos y le pasamos el diccionario con los datos
         # a modificar del usuario
-        db_client.test.profesores.find_one_and_replace({"_id":ObjectId(id)}, profesor_dict)
+        db_client.newdb.profesores.find_one_and_replace({"_id":ObjectId(id)}, profesor_dict)
         # Buscamos el objeto en base de datos y lo retornamos, así comprobamos que efectivamente
         # se ha modificado
         return search_profesor_id(id)    
@@ -69,7 +69,7 @@ async def modify_profesor(id: str, new_profesor: Profesor):
 
 @router.delete("/{id}", response_model=Profesor)
 async def delete_profesor(id:str):
-    found = db_client.test.profesores.find_one_and_delete({"_id":ObjectId(id)})
+    found = db_client.newdb.profesores.find_one_and_delete({"_id":ObjectId(id)})
 
     if not found:
         raise HTTPException(status_code=404, detail="Profesor not found")
@@ -84,7 +84,7 @@ def search_profesor_id(id: str):
     try:
         # El id en base de datos no se guarda como un string, sino que es un objeto 
         # Realizamos la conversión    
-        profesor = profesor_schema(db_client.test.profesores.find_one({"_id":ObjectId(id)}))
+        profesor = profesor_schema(db_client.newdb.profesores.find_one({"_id":ObjectId(id)}))
         # Necesitamos convertirlo a un objeto User. 
         return Profesor(**profesor)
     except:
@@ -97,7 +97,7 @@ def search_profesor(nombre: str, apellidos: str):
     try:
         # Si algo va mal en la búsqueda dentro de la base de datos se lanzará una excepción,
         # así que la controlamos
-        profesor = profesor_schema(db_client.test.profesores.find_one({"nombre":nombre, "apellidos":apellidos}))
+        profesor = profesor_schema(db_client.newdb.profesores.find_one({"nombre":nombre, "apellidos":apellidos}))
         return Profesor(**profesor)
     except:
         return {"error": "Profesor not found"}

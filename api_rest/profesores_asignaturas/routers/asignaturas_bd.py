@@ -13,7 +13,7 @@ router = APIRouter(prefix="/asignaturasdb", tags=["asignaturasdb"])
 async def asignaturas():
     # El método find() sin parámetros devuelve todos los registros
     # de la base de datos
-    return asignaturas_schema(db_client.newdb.asignaturas.find())
+    return asignaturas_schema(db_client.test.asignaturas.find())
 
 # Método get tipo query. Sólo busca por id
 @router.get("", response_model=Asignatura)
@@ -38,7 +38,7 @@ async def add_asignatura(asignatura: Asignatura):
     # Añadimos el usuario a nuestra base de datos
     # También podemos obtner con inserted_id el id que la base de datos
     # ha generado para nuestro usuario
-    id = db_client.newdb.asignaturas.insert_one(asignatura_dict).inserted_id
+    id = db_client.test.asignaturas.insert_one(asignatura_dict).inserted_id
 
     # Añadimos el campo id a nuestro diccionario. Hay que hacerle un cast
     # a string puesto que el id en base de datos se almacena como un objeto,
@@ -58,7 +58,7 @@ async def modify_asignatura(id: str, new_asignatura: Asignatura):
     try:
         # Buscamos el id en la base de datos y le pasamos el diccionario con los datos
         # a modificar del usuario
-        db_client.newdb.asignaturas.find_one_and_replace({"_id":ObjectId(id)}, asignatura_dict)
+        db_client.test.asignaturas.find_one_and_replace({"_id":ObjectId(id)}, asignatura_dict)
         # Buscamos el objeto en base de datos y lo retornamos, así comprobamos que efectivamente
         # se ha modificado
         return search_asignatura_id(id)    
@@ -68,7 +68,7 @@ async def modify_asignatura(id: str, new_asignatura: Asignatura):
 
 @router.delete("/{id}", response_model=Asignatura)
 async def delete_asignatura(id:str):
-    found = db_client.newdb.asignaturas.find_one_and_delete({"_id":ObjectId(id)})
+    found = db_client.test.asignaturas.find_one_and_delete({"_id":ObjectId(id)})
 
     if not found:
         raise HTTPException(status_code=404, detail="Asignatura not found")
@@ -82,7 +82,7 @@ def search_asignatura_id(id: str):
     try:
         # El id en base de datos no se guarda como un string, sino que es un objeto 
         # Realizamos la conversión    
-        asignatura = asignatura_schema(db_client.newdb.asignaturas.find_one({"_id":ObjectId(id)}))
+        asignatura = asignatura_schema(db_client.test.asignaturas.find_one({"_id":ObjectId(id)}))
         # Necesitamos convertirlo a un objeto User. 
         return Asignatura(**asignatura)
     except:
@@ -95,7 +95,7 @@ def search_asignatura(titulo: str):
     try:
         # Si algo va mal en la búsqueda dentro de la base de datos se lanzará una excepción,
         # así que la controlamos
-        asignatura = asignatura_schema(db_client.newdb.users.find_one({"titulo":titulo}))
+        asignatura = asignatura_schema(db_client.test.users.find_one({"titulo":titulo}))
         return Asignatura(**asignatura)
     except:
         return {"error": "Asignatura not found"}
